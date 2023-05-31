@@ -42,6 +42,7 @@ public class Atraccion extends Componente {
 				"\n-tipo de Atraccion: " + tipoAtraccion;
 	}
 	
+	@Override
 	public TipoAtraccion getTipoAtraccion() {
 		return this.tipoAtraccion;
 	}
@@ -55,4 +56,6 @@ public class Atraccion extends Componente {
 	public boolean equals(Atraccion other) {
 		return this.nombre.equals(other.nombre);
 	}
+	
+	
 }

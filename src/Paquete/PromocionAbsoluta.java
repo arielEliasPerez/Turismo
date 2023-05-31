@@ -1,13 +1,11 @@
 package Paquete;
 
-import java.util.ArrayList;
-
 public class PromocionAbsoluta extends Promocion {
 	private double costoPaquete;
 
-	public PromocionAbsoluta(String nombre, ArrayList<Atraccion> atracciones, double costoPaquete) {
-		super(nombre, atracciones);
-		this.costoPaquete = costoPaquete;
+	public PromocionAbsoluta(String nombre, TipoAtraccion tipo, double costoPaquete) {
+		super(nombre, tipo);
+		this.costoPaquete=costoPaquete;
 	}
 	
 	@Override

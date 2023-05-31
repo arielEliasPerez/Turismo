@@ -5,22 +5,15 @@ import java.util.ArrayList;
 public abstract class Promocion extends Componente{
 	protected ArrayList<Atraccion> atracciones;
 	
-	public Promocion(String nombre, ArrayList<Atraccion> atracciones) {
-		
-		super(nombre);
-		this.atracciones=atracciones;
-		this.tipoAtraccion=atracciones.get(0).tipoAtraccion;
-		
-		double costoTotal = 0;
-		double tiempoTotal = 0;
-		for (Atraccion atraccion : this.atracciones) {
-			costoTotal += atraccion.getCosto();
-			tiempoTotal += atraccion.tiempo;
-		}
-		
-		this.costo=costoTotal;
-		this.tiempo=tiempoTotal;
-		
+	public Promocion(String nombre, TipoAtraccion tipo) {
+		super(nombre, 0, 0, tipo);
+		this.atracciones = new ArrayList<>();
+	}
+	
+	public void addAtraccion(Atraccion atraccion) {
+		this.atracciones.add(atraccion);
+		this.costo+=atraccion.costo;
+		this.tiempo+=atraccion.tiempo;
 	}
 	
 	@Override
@@ -37,6 +30,7 @@ public abstract class Promocion extends Componente{
 		return this.atracciones;
 	}
 	
+	@Override
 	public TipoAtraccion getTipoAtraccion() {
 		return this.tipoAtraccion;
 	}
@@ -48,6 +42,7 @@ public abstract class Promocion extends Componente{
 		return otroCosto.compareTo(costo);
 	}
 	
+	@Override
 	public void decrementarCupo() {
 		for(Atraccion atraccion: atracciones) {
 			atraccion.decrementarCupo();
@@ -61,8 +56,7 @@ public abstract class Promocion extends Componente{
 		for(Atraccion atraccion : atracciones) {
 			msj+=atraccion.getNombre()+", ";
 		}
-		msj+="]\n-Duracion: "+tiempo+"hs"+
-				"\n-Precio Total: $"+costo;
+		msj+="]";
 		
 		return msj;
 	}

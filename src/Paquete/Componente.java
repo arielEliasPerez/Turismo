@@ -23,5 +23,7 @@ public abstract class Componente{
 
 	public abstract String getNombre();
 	
+	public abstract TipoAtraccion getTipoAtraccion();
+	
 	public abstract void decrementarCupo();
 }
