@@ -5,13 +5,16 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 public class SistemaTurismo {
-	private ArrayList<Usuario> usuarios;
+	public ArrayList<Usuario> usuarios;
 	private ArrayList<Atraccion> atracciones;
 	private ArrayList<Promocion> promociones;
+	private ArrayList<Compra> compras;
 
 	public SistemaTurismo() {
 		this.atracciones = new ArrayList<>();
 		this.promociones = new ArrayList<>();
+		this.usuarios = new ArrayList<>();
+		this.compras = new ArrayList<>();
 	}
 
 	public void generarListas() {
@@ -46,6 +49,14 @@ public class SistemaTurismo {
 		promociones.add(promo1);
 		promociones.add(promo2);
 		promociones.add(promo3);
+
+		Usuario usuario1 = new Usuario("Julian Alvarez", 100, 9, TipoAtraccion.PAISAJE);
+		Usuario usuario2 = new Usuario("Enzo Fernandez", 150, 50, TipoAtraccion.AVENTURA);
+		Usuario usuario3 = new Usuario("Alexis McAlister", 5.5, 15, TipoAtraccion.PAISAJE);
+
+		usuarios.add(usuario1);
+		usuarios.add(usuario2);
+		usuarios.add(usuario3);
 	}
 
 	public void ordenarListas() {
@@ -64,28 +75,19 @@ public class SistemaTurismo {
 		});
 	}
 
-	public void generarItinerarioAUsuarios() {
-		// for(Usuario usuario : usuarios){
-		Usuario usuario = new Usuario("Pepe", 1000, 8, TipoAtraccion.PAISAJE);
+	public ArrayList<Atraccion> sugerirAlUsuario(Usuario usuario) {
 
 		System.out.println("Nombre del visitante: " + usuario.getNombre() + "\n");
 
 		ArrayList<Atraccion> atraccionesAceptadas = iniciarSugerencias(usuario);
 
-		// mostrarItinerario()
-		System.out.println("\n--------------------------------------------");
-		System.out.println("Itinerario de " + usuario.getNombre());
-		for (Atraccion atraccion : atraccionesAceptadas) {
-			System.out.println(
-					"-- Atraccion: " + atraccion.getNombre() + "\tHoras de atracción: " + atraccion.getTiempo() + "hs");
-		}
-
-		// }
+		return atraccionesAceptadas;
 	}
 
 	private ArrayList<Atraccion> iniciarSugerencias(Usuario usuario) {
 		ArrayList<Componente> listaSugerencias = this.generarListaSugerencias(usuario);
 		ArrayList<Atraccion> atraccionesAceptadas = new ArrayList<>();
+		Compra compra = new Compra(usuario);
 
 		for (Componente sugerencia : listaSugerencias) {
 
@@ -97,41 +99,44 @@ public class SistemaTurismo {
 				mensajeDeSugerencia(sugerencia);
 
 				boolean respuesta = obtenerRespuesta();
-
 				if (respuesta == true) {
 					System.out.println("¡Aceptado!");
-
-					atraccionesAceptadas = guardarAtraccionesAceptadas(sugerencia, atraccionesAceptadas);
-					usuario = actualizarDatosUsuario(usuario, sugerencia);
-					decrementarCupo(sugerencia);
-
+					compra = procesarCompra(compra, sugerencia, atraccionesAceptadas);
 				}
 			}
 		}
+
+		compras.add(compra);
 
 		return atraccionesAceptadas;
 	}
 
 	private ArrayList<Componente> generarListaSugerencias(Usuario usuario) {
+
 		ArrayList<Componente> listaSugerida = new ArrayList<Componente>();
+		ArrayList<Atraccion> bufferAtracciones = new ArrayList<Atraccion>();
+		ArrayList<Promocion> bufferPromociones = new ArrayList<Promocion>();
+
 		int i = 0;
 		while (i < promociones.size()) {
 			if (promociones.get(i).getTipoAtraccion() == usuario.getAtraccionPreferida())
-				listaSugerida.add(promociones.remove(i));
+				listaSugerida.add(promociones.get(i));
 			else
-				i++;
+				bufferPromociones.add(promociones.get(i));
+			i++;
 		}
 
 		i = 0;
 		while (i < atracciones.size()) {
 			if (atracciones.get(i).getTipoAtraccion() == usuario.getAtraccionPreferida())
-				listaSugerida.add(atracciones.remove(i));
+				listaSugerida.add(atracciones.get(i));
 			else
-				i++;
+				bufferAtracciones.add(atracciones.get(i));
+			i++;
 		}
 
-		listaSugerida.addAll(promociones);
-		listaSugerida.addAll(atracciones);
+		listaSugerida.addAll(bufferPromociones);
+		listaSugerida.addAll(bufferAtracciones);
 
 		return listaSugerida;
 	}
@@ -143,7 +148,7 @@ public class SistemaTurismo {
 				&& usuario.getTiempo() - sugerencia.getTiempo() >= 0;
 	}
 
-	private static boolean esAtraccionAceptada(Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
+	private boolean esAtraccionAceptada(Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
 
 		boolean atraccionAceptada = false;
 		if (sugerencia.getClass() == Atraccion.class) {
@@ -176,6 +181,19 @@ public class SistemaTurismo {
 		return opc == 's' || opc == 'S';
 	}
 
+	private Compra procesarCompra(Compra compra, Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
+		atraccionesAceptadas = guardarAtraccionesAceptadas(sugerencia, atraccionesAceptadas);
+		compra.setUsuario(actualizarDatosUsuario(compra.getUsuario(), sugerencia));
+
+		compra.addSugerenciaDiaria(sugerencia);
+		compra.incrementarCostoTotal(sugerencia.getCosto());
+		compra.incrementarTiempoTotal(sugerencia.getTiempo());
+
+		sugerencia.decrementarCupo();
+
+		return compra;
+	}
+
 	private ArrayList<Atraccion> guardarAtraccionesAceptadas(Componente sugerencia,
 			ArrayList<Atraccion> atraccionesAceptadas) {
 		if (sugerencia.getClass() == Atraccion.class)
@@ -193,7 +211,15 @@ public class SistemaTurismo {
 		return usuario;
 	}
 
-	private void decrementarCupo(Componente sugerencia) {
+	public void generarItinerario(Usuario usuario, ArrayList<Atraccion> atraccionesAceptadas) {
+		System.out.println("\n--------------------------------------------");
+		System.out.println("Itinerario de " + usuario.getNombre());
+		for (Atraccion atraccion : atraccionesAceptadas) {
+			System.out.println(
+					"-- Atraccion: " + atraccion.getNombre() + "\tHoras de atracción: " + atraccion.getTiempo() + "hs");
 
+		}
+		Scanner entrada = new Scanner(System.in);
+		entrada.nextLine();
 	}
 }
