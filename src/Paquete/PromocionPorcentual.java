@@ -16,8 +16,8 @@ public class PromocionPorcentual extends Promocion{
 	@Override
 	public String toString() {
 		return super.toString()+
-				"\n-Duracion: "+tiempo+"hs"+
-				"\n-Precio Total: $"+costo+
-				"\n-Precio con descuento: "+ getCosto();
+				"\n-Duracion:\t\t"+tiempo+"hs"+
+				"\n-Precio Total:\t\t$"+costo+
+				"\n-Precio con descuento:\t\t"+ getCosto();
 	}
 }

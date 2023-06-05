@@ -22,7 +22,7 @@ public class SistemaTurismo {
 		Atraccion atr2 = new Atraccion("Minas Tirith", 5, 2.5, 25, TipoAtraccion.PAISAJE);
 		Atraccion atr3 = new Atraccion("La Comarca", 3, 6.5, 150, TipoAtraccion.DEGUSTACION);
 		Atraccion atr4 = new Atraccion("Mordor", 25, 3, 4, TipoAtraccion.AVENTURA);
-		Atraccion atr5 = new Atraccion("Abismo de Helm", 5, 2, 15, TipoAtraccion.PAISAJE);
+		Atraccion atr5 = new Atraccion("Abismo de Helm", 5, 2, 1, TipoAtraccion.PAISAJE);
 		Atraccion atr6 = new Atraccion("Lothlorien", 35, 1, 30, TipoAtraccion.DEGUSTACION);
 		Atraccion atr7 = new Atraccion("Erebor", 12, 3, 32, TipoAtraccion.AVENTURA);
 		Atraccion atr8 = new Atraccion("Bosque Negro", 3, 3, 12, TipoAtraccion.PAISAJE);
@@ -77,7 +77,7 @@ public class SistemaTurismo {
 
 	public ArrayList<Atraccion> sugerirAlUsuario(Usuario usuario) {
 
-		System.out.println("Nombre del visitante: " + usuario.getNombre() + "\n");
+		System.out.println("Nombre del visitante: " + usuario.getNombre());
 
 		ArrayList<Atraccion> atraccionesAceptadas = iniciarSugerencias(usuario);
 
@@ -95,18 +95,18 @@ public class SistemaTurismo {
 				break;
 
 			if (sePuedeSugerir(usuario, sugerencia, atraccionesAceptadas) == true) {
-
-				mensajeDeSugerencia(sugerencia);
+				
+				mostrarDatosActulizadosUsuario(usuario);
+				mostrarSugerencia(sugerencia);
 
 				boolean respuesta = obtenerRespuesta();
 				if (respuesta == true) {
 					System.out.println("¡Aceptado!");
 					compra = procesarCompra(compra, sugerencia, atraccionesAceptadas);
+					this.compras.add(compra);
 				}
 			}
 		}
-
-		compras.add(compra);
 
 		return atraccionesAceptadas;
 	}
@@ -114,15 +114,14 @@ public class SistemaTurismo {
 	private ArrayList<Componente> generarListaSugerencias(Usuario usuario) {
 
 		ArrayList<Componente> listaSugerida = new ArrayList<Componente>();
-		ArrayList<Atraccion> bufferAtracciones = new ArrayList<Atraccion>();
-		ArrayList<Promocion> bufferPromociones = new ArrayList<Promocion>();
+		ArrayList<Componente> buffer = new ArrayList<Componente>();
 
 		int i = 0;
 		while (i < promociones.size()) {
 			if (promociones.get(i).getTipoAtraccion() == usuario.getAtraccionPreferida())
 				listaSugerida.add(promociones.get(i));
 			else
-				bufferPromociones.add(promociones.get(i));
+				buffer.add(promociones.get(i));
 			i++;
 		}
 
@@ -131,22 +130,30 @@ public class SistemaTurismo {
 			if (atracciones.get(i).getTipoAtraccion() == usuario.getAtraccionPreferida())
 				listaSugerida.add(atracciones.get(i));
 			else
-				bufferAtracciones.add(atracciones.get(i));
+				buffer.add(atracciones.get(i));
 			i++;
 		}
 
-		listaSugerida.addAll(bufferPromociones);
-		listaSugerida.addAll(bufferAtracciones);
+		listaSugerida.addAll(buffer);
 
 		return listaSugerida;
 	}
+	
+	private void mostrarDatosActulizadosUsuario(Usuario usuario) {
+		System.out.println("\n\n-----------------------------------------------------------------------");
+		System.out.println("Presupuesto actual de "+usuario.getNombre()+": $"+usuario.getPresupuesto());
+		System.out.println("Tiempo disponible de "+usuario.getNombre()+": "+usuario.getTiempo()+" hs");
+		//System.out.println("*************************************************************");
+	}
+	
 
 	private boolean sePuedeSugerir(Usuario usuario, Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
 		boolean atraccionAceptada = esAtraccionAceptada(sugerencia, atraccionesAceptadas);
 
-		return atraccionAceptada == false && usuario.getPresupuesto() - sugerencia.getCosto() >= 0
-				&& usuario.getTiempo() - sugerencia.getTiempo() >= 0;
+		return atraccionAceptada == false && usuario.getPresupuesto() >= sugerencia.getCosto()
+				&& usuario.getTiempo() >= sugerencia.getTiempo() && sugerencia.sinCupo()==false;
 	}
+	
 
 	private boolean esAtraccionAceptada(Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
 
@@ -163,8 +170,8 @@ public class SistemaTurismo {
 		return atraccionAceptada;
 	}
 
-	private void mensajeDeSugerencia(Componente sugerencia) {
-		System.out.println("---------------------------------------------------------------");
+	private void mostrarSugerencia(Componente sugerencia) {
+		System.out.println("*************************************************************");
 		System.out.println(sugerencia.toString());
 		System.out.println("\nAcepta la sugerecia? Ingrese S o N");
 	}
@@ -182,7 +189,7 @@ public class SistemaTurismo {
 	}
 
 	private Compra procesarCompra(Compra compra, Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
-		atraccionesAceptadas = guardarAtraccionesAceptadas(sugerencia, atraccionesAceptadas);
+		guardarAtraccionesAceptadas(sugerencia, atraccionesAceptadas);
 		compra.setUsuario(actualizarDatosUsuario(compra.getUsuario(), sugerencia));
 
 		compra.addSugerenciaDiaria(sugerencia);
@@ -194,14 +201,12 @@ public class SistemaTurismo {
 		return compra;
 	}
 
-	private ArrayList<Atraccion> guardarAtraccionesAceptadas(Componente sugerencia,
+	private void guardarAtraccionesAceptadas(Componente sugerencia,
 			ArrayList<Atraccion> atraccionesAceptadas) {
 		if (sugerencia.getClass() == Atraccion.class)
 			atraccionesAceptadas.add((Atraccion) sugerencia);
 		else
 			atraccionesAceptadas.addAll(((Promocion) sugerencia).getAtracciones());
-
-		return atraccionesAceptadas;
 	}
 
 	private Usuario actualizarDatosUsuario(Usuario usuario, Componente sugerencia) {
@@ -210,16 +215,19 @@ public class SistemaTurismo {
 
 		return usuario;
 	}
+	
 
 	public void generarItinerario(Usuario usuario, ArrayList<Atraccion> atraccionesAceptadas) {
-		System.out.println("\n--------------------------------------------");
+		System.out.println("\n------------------------------------------------------------------");
 		System.out.println("Itinerario de " + usuario.getNombre());
 		for (Atraccion atraccion : atraccionesAceptadas) {
 			System.out.println(
 					"-- Atraccion: " + atraccion.getNombre() + "\tHoras de atracción: " + atraccion.getTiempo() + "hs");
 
 		}
+		System.out.println("\n------------------------------------------------------------------");
 		Scanner entrada = new Scanner(System.in);
 		entrada.nextLine();
 	}
+
 }

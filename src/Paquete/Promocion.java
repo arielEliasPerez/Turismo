@@ -35,6 +35,18 @@ public abstract class Promocion extends Componente{
 		return this.tipoAtraccion;
 	}
 	
+	@Override
+	public boolean sinCupo() {
+		boolean sinCupo=false;
+		for(Atraccion atraccion: atracciones) {
+			if(atraccion.sinCupo()==true) {
+				sinCupo=true;
+				break;	
+			}	
+		}
+		return sinCupo;
+	}
+	
 	public int compareTo(Promocion other) {		
 		Double costo = this.getCosto();
 		Double otroCosto = other.getCosto();
@@ -52,7 +64,8 @@ public abstract class Promocion extends Componente{
 	@Override
 	public String toString() {
 		String msj="Promocion "+nombre+ 
-				"\n-Atracciones incluidas: [ ";
+				"\n-Tipo de Atracciones:\t"+this.tipoAtraccion+
+				"\n-Atracciones incluidas:\t[ ";
 		for(Atraccion atraccion : atracciones) {
 			msj+=atraccion.getNombre()+", ";
 		}

@@ -23,8 +23,9 @@ public class Atraccion extends Componente {
 		return this.nombre;
 	}
 	
-	public int getCupo() {
-		return this.cupo;
+	@Override
+	public boolean sinCupo() {
+		return this.cupo==0;
 	}
 	
 	public int compareTo(Atraccion other) {
@@ -36,10 +37,10 @@ public class Atraccion extends Componente {
 
 	@Override
 	public String toString() {
-		return "Atraccion " + nombre +
-				"\n-Costo: $" + costo + 
-				"\n-Tiempo=" + tiempo+
-				"\n-tipo de Atraccion: " + tipoAtraccion;
+		return "Atraccion\t\t" + nombre +
+				"\n-Costo:\t\t\t$" + costo + 
+				"\n-Tiempo:\t\t" + tiempo+
+				"\n-tipo de Atraccion:\t" + tipoAtraccion;
 	}
 	
 	@Override

@@ -18,9 +18,9 @@ public class PromocionAxB extends Promocion {
 	@Override
 	public String toString() {
 		return	super.toString()+
-				"\n-Duracion: "+tiempo+"hs"+
-				"\n-Precio Total: $"+costo+
-				"\n-Atraccion Gratis: "+atraccionFree.getNombre();
+				"\n-Duracion:\t\t"+tiempo+"hs"+
+				"\n-Precio Total:\t\t$"+costo+
+				"\n-Atraccion Gratis:\t"+atraccionFree.getNombre();
 				
 	}
 	

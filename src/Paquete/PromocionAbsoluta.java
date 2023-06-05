@@ -14,5 +14,10 @@ public class PromocionAbsoluta extends Promocion {
 	}
 
 	
-	
+	@Override
+	public String toString() {
+		return super.toString()+
+				"\n-Duracion:\t\t"+tiempo+"hs"+
+				"\n-Precio Total:\t\t$"+costo;
+	}
 }

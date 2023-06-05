@@ -26,4 +26,6 @@ public abstract class Componente{
 	public abstract TipoAtraccion getTipoAtraccion();
 	
 	public abstract void decrementarCupo();
+	
+	public abstract boolean sinCupo();
 }
