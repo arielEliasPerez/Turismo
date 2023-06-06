@@ -17,13 +17,26 @@ public abstract class Componente{
 		this.tipoAtraccion=tipoAtraccion;
 	}
 
-	public abstract double getCosto();
-
-	public abstract double getTiempo();
-
-	public abstract String getNombre();
+	public String getNombre() {
+		return this.nombre;
+	}
 	
-	public abstract TipoAtraccion getTipoAtraccion();
+	public double getTiempo() {
+		return this.tiempo;
+	}
+	
+	public TipoAtraccion getTipoAtraccion() {
+		return this.tipoAtraccion;
+	}
+	
+	public int compareTo(Componente other) {
+		Double costo = this.getCosto();
+		Double otroCosto = other.costo;
+		
+		return otroCosto.compareTo(costo);
+	}
+	
+	public abstract double getCosto();
 	
 	public abstract void decrementarCupo();
 	

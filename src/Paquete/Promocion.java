@@ -16,23 +16,8 @@ public abstract class Promocion extends Componente{
 		this.tiempo+=atraccion.tiempo;
 	}
 	
-	@Override
-	public double getTiempo() {
-		return this.tiempo;
-	}
-	
-	@Override
-	public String getNombre() {
-		return this.nombre;
-	}
-	
 	public ArrayList<Atraccion> getAtracciones(){
 		return this.atracciones;
-	}
-	
-	@Override
-	public TipoAtraccion getTipoAtraccion() {
-		return this.tipoAtraccion;
 	}
 	
 	@Override
@@ -45,13 +30,6 @@ public abstract class Promocion extends Componente{
 			}	
 		}
 		return sinCupo;
-	}
-	
-	public int compareTo(Promocion other) {		
-		Double costo = this.getCosto();
-		Double otroCosto = other.getCosto();
-		
-		return otroCosto.compareTo(costo);
 	}
 	
 	@Override

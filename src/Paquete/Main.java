@@ -11,12 +11,14 @@ public class Main {
 		sistemaTurismo.generarListas(); // leer listas desde Archivos
 
 		sistemaTurismo.ordenarListas();
-
+		
+		sistemaTurismo.generarListasSugerencias();
+		
 		for (Usuario usuario : sistemaTurismo.usuarios) {
 			
 			ArrayList<Atraccion> atraccionesAceptadas = sistemaTurismo.sugerirAlUsuario(usuario);
 			sistemaTurismo.generarItinerario(usuario, atraccionesAceptadas);
-
+			
 		}
 		
 		//generarArchivoDeCompras
