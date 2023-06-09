@@ -1,5 +1,7 @@
 package Paquete;
 
+import java.util.ArrayList;
+
 public abstract class Componente{
 	protected String nombre;
 	protected double costo;
@@ -14,7 +16,7 @@ public abstract class Componente{
 		this.nombre = nombre;
 		this.costo = costo;
 		this.tiempo = tiempo;
-		this.tipoAtraccion=tipoAtraccion;
+		this.tipoAtraccion = tipoAtraccion;
 	}
 
 	public String getNombre() {
@@ -31,9 +33,18 @@ public abstract class Componente{
 	
 	public int compareTo(Componente other) {
 		Double costo = this.getCosto();
-		Double otroCosto = other.costo;
+		Double otroCosto = other.getCosto();
 		
-		return otroCosto.compareTo(costo);
+		int ret = otroCosto.compareTo(costo);
+		
+		if(ret==0) {
+			Double tiempo = this.tiempo;
+			Double otroTiempo = other.tiempo;
+			
+			ret= otroTiempo.compareTo(tiempo);
+		}
+		
+		return ret; 
 	}
 	
 	public abstract double getCosto();
@@ -41,4 +52,6 @@ public abstract class Componente{
 	public abstract void decrementarCupo();
 	
 	public abstract boolean sinCupo();
+	
+	public abstract boolean hayAtraccionAceptada(Atraccion otraAtraccion);
 }

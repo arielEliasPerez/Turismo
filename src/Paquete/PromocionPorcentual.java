@@ -1,10 +1,12 @@
 package Paquete;
 
+import java.util.ArrayList;
+
 public class PromocionPorcentual extends Promocion{
 	private double porcentajeDescuento;
 	
-	public PromocionPorcentual(String nombre, TipoAtraccion tipo, double porcentajeDescuento) {
-		super(nombre, tipo);
+	public PromocionPorcentual(String nombre, TipoAtraccion tipoAtraccion, ArrayList<Atraccion> atracciones, int tipoPromo, double porcentajeDescuento) {
+		super(nombre, tipoAtraccion, atracciones, tipoPromo);
 		this.porcentajeDescuento = porcentajeDescuento;
 	}
 	

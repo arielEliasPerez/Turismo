@@ -27,7 +27,7 @@ public class Atraccion extends Componente {
 	public String toString() {
 		return "Atraccion\t\t" + nombre +
 				"\n-Costo:\t\t\t$" + costo + 
-				"\n-Tiempo:\t\t" + tiempo+
+				"\n-Tiempo:\t\t" + tiempo+" hs"+
 				"\n-tipo de Atraccion:\t" + tipoAtraccion;
 	}
 	
@@ -36,5 +36,9 @@ public class Atraccion extends Componente {
 		return this.nombre.equals(other.nombre);
 	}
 	
+	@Override
+	public boolean hayAtraccionAceptada(Atraccion otraAtraccion) {
+		return this.equals(otraAtraccion);
+	}
 	
 }

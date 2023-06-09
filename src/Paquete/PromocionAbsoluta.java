@@ -1,10 +1,12 @@
 package Paquete;
 
+import java.util.ArrayList;
+
 public class PromocionAbsoluta extends Promocion {
 	private double costoPaquete;
 
-	public PromocionAbsoluta(String nombre, TipoAtraccion tipo, double costoPaquete) {
-		super(nombre, tipo);
+	public PromocionAbsoluta(String nombre, TipoAtraccion tipoAtraccion, ArrayList<Atraccion> atracciones, int tipoPromo, double costoPaquete) {
+		super(nombre, tipoAtraccion, atracciones, tipoPromo);
 		this.costoPaquete=costoPaquete;
 	}
 	
@@ -18,6 +20,6 @@ public class PromocionAbsoluta extends Promocion {
 	public String toString() {
 		return super.toString()+
 				"\n-Duracion:\t\t"+tiempo+"hs"+
-				"\n-Precio Total:\t\t$"+costo;
+				"\n-Precio Total:\t\t$"+costoPaquete;
 	}
 }

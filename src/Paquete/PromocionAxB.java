@@ -1,12 +1,14 @@
 package Paquete;
 
+import java.util.ArrayList;
+
 public class PromocionAxB extends Promocion {
 	private Atraccion atraccionFree;
 
-	public PromocionAxB(String nombre, TipoAtraccion tipo, Atraccion atraccionFree) {
-		super(nombre, tipo);
+	public PromocionAxB(String nombre, TipoAtraccion tipoAtraccion, ArrayList<Atraccion> atracciones, int tipoPromo, Atraccion atraccionFree) {
+		super(nombre, tipoAtraccion, atracciones, tipoPromo);
 		this.atraccionFree=atraccionFree;
-		atracciones.add(atraccionFree);
+		this.atracciones.add(atraccionFree);
 		this.tiempo+=atraccionFree.tiempo;
 	}
 

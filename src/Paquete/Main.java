@@ -7,8 +7,9 @@ public class Main {
 	public static void main(String[] args) {
 
 		SistemaTurismo sistemaTurismo = new SistemaTurismo();
-
-		sistemaTurismo.generarListas(); // leer listas desde Archivos
+		
+		sistemaTurismo.leerArchivos("casos de prueba/in/");
+		//sistemaTurismo.generarListas();
 
 		sistemaTurismo.ordenarListas();
 		

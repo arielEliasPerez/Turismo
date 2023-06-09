@@ -2,6 +2,7 @@ package Paquete;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class SistemaTurismo {
@@ -25,7 +26,14 @@ public class SistemaTurismo {
 		this.sugerenciasDegustacion= new ArrayList<Componente>();
 	}
 
-	public void generarListas() {
+	public void leerArchivos(String ruta) {
+		LecturaArchivos archivo = new LecturaArchivos(ruta);
+		
+		usuarios = archivo.leerArchivoUsuarios();
+		atracciones = archivo.leerArchivoAtracciones();
+		promociones = archivo.leerArchPromociones();
+	}
+	/*public void generarListas() {
 		Atraccion atr1 = new Atraccion("Moria", 10, 2, 6, TipoAtraccion.AVENTURA);
 		Atraccion atr2 = new Atraccion("Minas Tirith", 5, 2.5, 25, TipoAtraccion.PAISAJE);
 		Atraccion atr3 = new Atraccion("La Comarca", 3, 6.5, 150, TipoAtraccion.DEGUSTACION);
@@ -65,7 +73,7 @@ public class SistemaTurismo {
 		usuarios.add(usuario1);
 		usuarios.add(usuario2);
 		usuarios.add(usuario3);
-	}
+	}*/
 
 	public void ordenarListas() {
 		atracciones.sort(new Comparator<Atraccion>() {
@@ -178,14 +186,12 @@ public class SistemaTurismo {
 	private boolean esAtraccionAceptada(Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
 
 		boolean atraccionAceptada = false;
-		if (sugerencia.getClass() == Atraccion.class) {
 			for (Atraccion atraccion : atraccionesAceptadas) {
-				if (((Atraccion) sugerencia).equals(atraccion)) {
+				if (sugerencia.hayAtraccionAceptada(atraccion)) {
 					atraccionAceptada = true;
 					break;
 				}
 			}
-		}
 
 		return atraccionAceptada;
 	}
