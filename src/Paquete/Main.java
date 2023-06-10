@@ -7,22 +7,27 @@ public class Main {
 	public static void main(String[] args) {
 
 		SistemaTurismo sistemaTurismo = new SistemaTurismo();
-		
+
 		sistemaTurismo.leerArchivos("casos de prueba/in/");
-		//sistemaTurismo.generarListas();
 
 		sistemaTurismo.ordenarListas();
-		
+
 		sistemaTurismo.generarListasSugerencias();
-		
+
+		ArrayList<Compra> compras = new ArrayList<>();
+
 		for (Usuario usuario : sistemaTurismo.usuarios) {
-			
-			ArrayList<Atraccion> atraccionesAceptadas = sistemaTurismo.sugerirAlUsuario(usuario);
-			sistemaTurismo.generarItinerario(usuario, atraccionesAceptadas);
-			
+
+			Compra compra = new Compra(usuario);
+
+			ArrayList<Atraccion> atraccionesAceptadas = sistemaTurismo.sugerirAlUsuario(usuario, compra);
+
+			sistemaTurismo.generarItinerario(usuario, compra, atraccionesAceptadas);
+
+			compras.add(compra);
 		}
-		
-		//generarArchivoDeCompras
+
+		sistemaTurismo.generarArchivoDeCompras("casos de prueba/out/", compras);
 
 	}
 

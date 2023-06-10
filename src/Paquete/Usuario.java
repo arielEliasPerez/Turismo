@@ -36,4 +36,11 @@ public class Usuario {
 	public double getTiempo() {
 		return this.tiempo;
 	}
+	
+	public String toString() {
+		return "Nombre: "+this.nombre+
+				"\nPresupuesto final: "+this.presupuesto+
+				"\nTiempo resultante: "+this.tiempo+" hs\n";
+				
+	}
 }

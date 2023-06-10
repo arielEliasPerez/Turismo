@@ -2,14 +2,15 @@ package Paquete;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Scanner;
+
+import procesoArchivos.EscrituraArchivo;
+import procesoArchivos.LecturaArchivos;
 
 public class SistemaTurismo {
 	public ArrayList<Usuario> usuarios;
 	private ArrayList<Atraccion> atracciones;
 	private ArrayList<Promocion> promociones;
-	private ArrayList<Compra> compras;
 
 	private ArrayList<Componente> sugerenciasPaisaje;
 	private ArrayList<Componente> sugerenciasAventura;
@@ -19,61 +20,19 @@ public class SistemaTurismo {
 		this.atracciones = new ArrayList<>();
 		this.promociones = new ArrayList<>();
 		this.usuarios = new ArrayList<>();
-		this.compras = new ArrayList<>();
-		
-		this.sugerenciasAventura= new ArrayList<Componente>();
-		this.sugerenciasPaisaje= new ArrayList<Componente>();
-		this.sugerenciasDegustacion= new ArrayList<Componente>();
+
+		this.sugerenciasAventura = new ArrayList<Componente>();
+		this.sugerenciasPaisaje = new ArrayList<Componente>();
+		this.sugerenciasDegustacion = new ArrayList<Componente>();
 	}
 
 	public void leerArchivos(String ruta) {
 		LecturaArchivos archivo = new LecturaArchivos(ruta);
-		
+
 		usuarios = archivo.leerArchivoUsuarios();
 		atracciones = archivo.leerArchivoAtracciones();
 		promociones = archivo.leerArchPromociones();
 	}
-	/*public void generarListas() {
-		Atraccion atr1 = new Atraccion("Moria", 10, 2, 6, TipoAtraccion.AVENTURA);
-		Atraccion atr2 = new Atraccion("Minas Tirith", 5, 2.5, 25, TipoAtraccion.PAISAJE);
-		Atraccion atr3 = new Atraccion("La Comarca", 3, 6.5, 150, TipoAtraccion.DEGUSTACION);
-		Atraccion atr4 = new Atraccion("Mordor", 25, 3, 4, TipoAtraccion.AVENTURA);
-		Atraccion atr5 = new Atraccion("Abismo de Helm", 5, 2, 1, TipoAtraccion.PAISAJE);
-		Atraccion atr6 = new Atraccion("Lothlorien", 35, 1, 30, TipoAtraccion.DEGUSTACION);
-		Atraccion atr7 = new Atraccion("Erebor", 12, 3, 32, TipoAtraccion.AVENTURA);
-		Atraccion atr8 = new Atraccion("Bosque Negro", 3, 3, 12, TipoAtraccion.PAISAJE);
-
-		atracciones.add(atr1);
-		atracciones.add(atr2);
-		atracciones.add(atr3);
-		atracciones.add(atr4);
-		atracciones.add(atr5);
-		atracciones.add(atr6);
-		atracciones.add(atr7);
-		atracciones.add(atr8);
-
-		Promocion promo1 = new PromocionPorcentual("Pack Aventura", TipoAtraccion.AVENTURA, 10);
-		promo1.addAtraccion(atr1);
-		promo1.addAtraccion(atr4);
-		Promocion promo2 = new PromocionAbsoluta("Pack Degustacion", TipoAtraccion.DEGUSTACION, 36);
-		promo2.addAtraccion(atr3);
-		promo2.addAtraccion(atr6);
-		Promocion promo3 = new PromocionAxB("Pack Paisaje", TipoAtraccion.PAISAJE, atr8);
-		promo3.addAtraccion(atr2);
-		promo3.addAtraccion(atr5);
-
-		promociones.add(promo1);
-		promociones.add(promo2);
-		promociones.add(promo3);
-
-		Usuario usuario1 = new Usuario("Julian Alvarez", 100, 9, TipoAtraccion.PAISAJE);
-		Usuario usuario2 = new Usuario("Enzo Fernandez", 150, 50, TipoAtraccion.AVENTURA);
-		Usuario usuario3 = new Usuario("Alexis McAlister", 5.5, 15, TipoAtraccion.PAISAJE);
-
-		usuarios.add(usuario1);
-		usuarios.add(usuario2);
-		usuarios.add(usuario3);
-	}*/
 
 	public void ordenarListas() {
 		atracciones.sort(new Comparator<Atraccion>() {
@@ -120,18 +79,17 @@ public class SistemaTurismo {
 		}
 	}
 
-	public ArrayList<Atraccion> sugerirAlUsuario(Usuario usuario) {
+	public ArrayList<Atraccion> sugerirAlUsuario(Usuario usuario, Compra compra) {
 
 		System.out.println("Nombre del visitante: " + usuario.getNombre());
 
-		ArrayList<Atraccion> atraccionesAceptadas = iniciarSugerencias(usuario);
+		ArrayList<Atraccion> atraccionesAceptadas = iniciarSugerencias(usuario, compra);
 
 		return atraccionesAceptadas;
 	}
 
-	private ArrayList<Atraccion> iniciarSugerencias(Usuario usuario) {
+	private ArrayList<Atraccion> iniciarSugerencias(Usuario usuario, Compra compra) {
 		ArrayList<Atraccion> atraccionesAceptadas = new ArrayList<>();
-		Compra compra = new Compra(usuario);
 
 		ArrayList<Componente> sugerencias = buscarListaSugerenciasSegunTipo(usuario.getAtraccionPreferida());
 
@@ -149,7 +107,6 @@ public class SistemaTurismo {
 				if (respuesta == true) {
 					System.out.println("¡Aceptado!");
 					compra = procesarCompra(compra, sugerencia, atraccionesAceptadas);
-					this.compras.add(compra);
 				}
 			}
 		}
@@ -186,12 +143,12 @@ public class SistemaTurismo {
 	private boolean esAtraccionAceptada(Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
 
 		boolean atraccionAceptada = false;
-			for (Atraccion atraccion : atraccionesAceptadas) {
-				if (sugerencia.hayAtraccionAceptada(atraccion)) {
-					atraccionAceptada = true;
-					break;
-				}
+		for (Atraccion atraccion : atraccionesAceptadas) {
+			if (sugerencia.hayAtraccionAceptada(atraccion)) {
+				atraccionAceptada = true;
+				break;
 			}
+		}
 
 		return atraccionAceptada;
 	}
@@ -241,7 +198,8 @@ public class SistemaTurismo {
 		return usuario;
 	}
 
-	public void generarItinerario(Usuario usuario, ArrayList<Atraccion> atraccionesAceptadas) {
+	public void generarItinerario(Usuario usuario, Compra compra, ArrayList<Atraccion> atraccionesAceptadas) {
+
 		System.out.println("\n------------------------------------------------------------------");
 		System.out.println("Itinerario de " + usuario.getNombre());
 		for (Atraccion atraccion : atraccionesAceptadas) {
@@ -249,9 +207,18 @@ public class SistemaTurismo {
 					"-- Atraccion: " + atraccion.getNombre() + "\tHoras de atracción: " + atraccion.getTiempo() + "hs");
 
 		}
+		System.out.println("\nHoras Necesarias: " + compra.getTiempo() + " hs\tMonto necesario: $" + compra.getCosto());
 		System.out.println("\n------------------------------------------------------------------");
 		Scanner entrada = new Scanner(System.in);
 		entrada.nextLine();
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+	}
+
+	public void generarArchivoDeCompras(String ruta, ArrayList<Compra> compras) {
+		EscrituraArchivo archivo = new EscrituraArchivo(ruta);
+
+		archivo.guardarArchivoCompras(compras);
 	}
 
 }
