@@ -79,18 +79,12 @@ public class SistemaTurismo {
 		}
 	}
 
+
+
 	public ArrayList<Atraccion> sugerirAlUsuario(Usuario usuario, Compra compra) {
-
 		System.out.println("Nombre del visitante: " + usuario.getNombre());
-
-		ArrayList<Atraccion> atraccionesAceptadas = iniciarSugerencias(usuario, compra);
-
-		return atraccionesAceptadas;
-	}
-
-	private ArrayList<Atraccion> iniciarSugerencias(Usuario usuario, Compra compra) {
+		
 		ArrayList<Atraccion> atraccionesAceptadas = new ArrayList<>();
-
 		ArrayList<Componente> sugerencias = buscarListaSugerenciasSegunTipo(usuario.getAtraccionPreferida());
 
 		for (Componente sugerencia : sugerencias) {
@@ -106,7 +100,7 @@ public class SistemaTurismo {
 				boolean respuesta = obtenerRespuesta();
 				if (respuesta == true) {
 					System.out.println("¡Aceptado!");
-					compra = procesarCompra(compra, sugerencia, atraccionesAceptadas);
+					procesarCompra(compra, sugerencia, atraccionesAceptadas);
 				}
 			}
 		}
@@ -126,17 +120,10 @@ public class SistemaTurismo {
 		}
 	}
 
-	private void mostrarDatosActulizadosUsuario(Usuario usuario) {
-		System.out.println("\n\n-----------------------------------------------------------------------");
-		System.out.println("Presupuesto actual de " + usuario.getNombre() + ": $" + usuario.getPresupuesto());
-		System.out.println("Tiempo disponible de " + usuario.getNombre() + ": " + usuario.getTiempo() + " hs");
-		// System.out.println("*************************************************************");
-	}
-
 	private boolean sePuedeSugerir(Usuario usuario, Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
-		boolean atraccionAceptada = esAtraccionAceptada(sugerencia, atraccionesAceptadas);
+		boolean esAtraccionAceptada = esAtraccionAceptada(sugerencia, atraccionesAceptadas);
 
-		return atraccionAceptada == false && usuario.getPresupuesto() >= sugerencia.getCosto()
+		return esAtraccionAceptada == false && usuario.getPresupuesto() >= sugerencia.getCosto()
 				&& usuario.getTiempo() >= sugerencia.getTiempo() && sugerencia.sinCupo() == false;
 	}
 
@@ -151,6 +138,13 @@ public class SistemaTurismo {
 		}
 
 		return atraccionAceptada;
+	}
+
+	private void mostrarDatosActulizadosUsuario(Usuario usuario) {
+		System.out.println("\n\n-----------------------------------------------------------------------");
+		System.out.println("Presupuesto actual de " + usuario.getNombre() + ": $" + usuario.getPresupuesto());
+		System.out.println("Tiempo disponible de " + usuario.getNombre() + ": " + usuario.getTiempo() + " hs");
+		// System.out.println("*************************************************************");
 	}
 
 	private void mostrarSugerencia(Componente sugerencia) {
@@ -171,17 +165,16 @@ public class SistemaTurismo {
 		return opc == 's' || opc == 'S';
 	}
 
-	private Compra procesarCompra(Compra compra, Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
+	private void procesarCompra(Compra compra, Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
 		guardarAtraccionesAceptadas(sugerencia, atraccionesAceptadas);
-		compra.setUsuario(actualizarDatosUsuario(compra.getUsuario(), sugerencia));
+		compra.getUsuario().restarTiempo(sugerencia.getTiempo());
+		compra.getUsuario().restarPresupuesto(sugerencia.getCosto());
 
 		compra.addSugerenciaDiaria(sugerencia);
 		compra.incrementarCostoTotal(sugerencia.getCosto());
 		compra.incrementarTiempoTotal(sugerencia.getTiempo());
 
 		sugerencia.decrementarCupo();
-
-		return compra;
 	}
 
 	private void guardarAtraccionesAceptadas(Componente sugerencia, ArrayList<Atraccion> atraccionesAceptadas) {
@@ -191,13 +184,6 @@ public class SistemaTurismo {
 			atraccionesAceptadas.addAll(((Promocion) sugerencia).getAtracciones());
 	}
 
-	private Usuario actualizarDatosUsuario(Usuario usuario, Componente sugerencia) {
-		usuario.restarTiempo(sugerencia.getTiempo());
-		usuario.restarPresupuesto(sugerencia.getCosto());
-
-		return usuario;
-	}
-
 	public void generarItinerario(Usuario usuario, Compra compra, ArrayList<Atraccion> atraccionesAceptadas) {
 
 		System.out.println("\n------------------------------------------------------------------");
@@ -205,7 +191,6 @@ public class SistemaTurismo {
 		for (Atraccion atraccion : atraccionesAceptadas) {
 			System.out.println(
 					"-- Atraccion: " + atraccion.getNombre() + "\tHoras de atracción: " + atraccion.getTiempo() + "hs");
-
 		}
 		System.out.println("\nHoras Necesarias: " + compra.getTiempo() + " hs\tMonto necesario: $" + compra.getCosto());
 		System.out.println("\n------------------------------------------------------------------");
